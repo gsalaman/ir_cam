@@ -16,6 +16,7 @@ except:
   print "Unable ot connect to MQTT broker"
   exit(0)
 
+print "Camera running.  Hit ctl-c to exit"
 while True:
   pixels = sensor.get_pixels()
   
@@ -26,9 +27,10 @@ while True:
     # saturate each pixel to 255 max
     if pixel > 255:
        pixel = 255
+    if pixel < 0:
+       pixel = 0
 
   packed_data = bytearray(pixels)
   client.publish("ir_camera_pixels", packed_data)
-  print packed_data
     
-  time.sleep(1)
+  time.sleep(.1)
