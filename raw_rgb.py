@@ -49,18 +49,6 @@ pixel_size = 8
 
 display = Screen(matrix_rows, matrix_columns, num_hor, num_vert)
 
-# dummy pixel data
-pixels = []
-start_color = 0  
-stop_color = 150 
-temp_color = start_color
-for pixel_index in range(0,64):
-  temp_color = pixel_index * ((stop_color - start_color) / 64) + start_color
-  if temp_color < 0:
-    temp_color =0
-  #print temp_color
-  pixels.append(temp_color)
-
 while True:
   pixels = sensor.get_pixels()
   
@@ -74,10 +62,7 @@ while True:
     if (x >= 63):
       x = 0
       y += pixel_size 
+  
   display.show()
 
-  print color
-  time.sleep(1)
-    
-   
-
+  time.sleep(.1)
