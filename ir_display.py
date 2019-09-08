@@ -23,20 +23,28 @@ options.rows = matrix_rows
 options.cols = matrix_columns 
 options.chain_length = matrix_horizontal
 options.parallel = matrix_vertical 
-
-#options.hardware_mapping = 'adafruit-hat-pwm' 
-#options.hardware_mapping = 'adafruit-hat'  # If you have an Adafruit HAT: 'adafruit-hat'
 options.hardware_mapping = 'regular'  
-
-options.gpio_slowdown = 2
+#options.gpio_slowdown = 2
 
 matrix = RGBMatrix(options = options)
 
+# Since we're doing a "preditor" style view, we're going to map our raw pixel
+# temperature to a color (from blue to red).
+# The low bound will tell which pixel temp maps to blue, and the high bound
+# tells what maps to red.
+pixel_low_bound = 75 
+pixel_high_bound = 130 
+
 ##############################
+# map_color
+#
+# This function takes a raw pixel value (temperature) and maps it to a color 
+# value
+############################## 
 def map_color(pixel_val):
   
-  pixel_low_bound = 75 
-  pixel_high_bound = 130 
+  global pixel_low_bound  
+  global pixel_high_bound 
 
   # We're going to use HSV for the color...240 is blue, 0 is red.
   # We'll map 240 to our low_bound, 0 to our high_bound, and interpolate 
@@ -60,12 +68,20 @@ def map_color(pixel_val):
   color_delta = color_range * pixel_pct / 100 
   mapped_color = cool_color + color_delta 
 
-  # for right now, I'm just going to use that number as the hsv value.
   return "hsl({},100%,50%)".format(mapped_color)
 
 #############################
+# show_pixels
+#
+# This function takes a packed pixel payload, unpacks it, and maps those
+# pixels displays on our RGB matrix "preditor vision" style, doing
+# a bicubic interpolation to increase our 8x8 pixel data to fit a square on 
+# the screen.
+#############################
 def show_pixels(payload):
   global matrix
+  global total_rows
+  global total_columns
 
   # Step 1:  read the pixel data out of the message
   pixel_data = []
@@ -88,24 +104,29 @@ def show_pixels(payload):
   
    
   # Okay, we've built the 8x8.  Now want to rescale it up to our display size
-
-  # better scaling math goes here...
-  display_side = 64
+  # Since we're doing a square, make it the smaller of our width and height.
+  if (total_rows < total_columns):
+    display_side = total_rows
+  else:
+    display_side = total_columns
 
   full_image = image_8x8.resize((display_side,display_side), Image.BICUBIC)
   matrix.SetImage(full_image,0,0)
 
 ##############################
-
+# on_message
+#
+#  MQTT callback for when we recieve a message.
+##############################
 def on_message(client, userdata, message):
-
-  print "Callback!"
 
   if message.topic == "ir_camera_pixels":
     show_pixels(message.payload)
   else:
     print("Unknown topic received:  "+message.topic)
 
+###############################
+# And, the main code.
 ###############################
 broker_address = "10.0.0.17"
 #broker_address = "makerlabPi1"
@@ -120,7 +141,7 @@ except:
 client.loop_start()
 client.subscribe("ir_camera_pixels")
 
+print "Display running.  Hit ctl-c to exit"
 while True:
-  print "Click!"
   time.sleep(1)
 
