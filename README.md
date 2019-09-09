@@ -18,9 +18,16 @@ topic = ir_camera_pixels, message is a stream of 64 bytes.
 ## display side
 ir_display.py will be the display side.  We'll subscribe to the 64 pixels, and use that to make an 8x8 color image.  Then, using PIL, we'll upscale that image to our display size (keeping it a square).
 
-## Display control Messages
-I'm going to implement a "query/set" mechanism...that way a client can either set a raw pixel temperature for high 
+## temp control
+`ir_cam_display/low_temp` with + or - as payload
+`ir_cam_display/high_temp` with + or - as payload
+
+# Future
+I'm was going to implement a "query/set" mechanism...that way a client can either set a raw pixel temperature for high 
 or low bound, or do an increment/decrement (query, add or subtract, then set)
+
+This though requires you to store state:  am I incrementing or decrementing...wait for the value, then send the command.
+Easier to just do an increment/decrement function.
 
 Proposed messages:  
 Subscribed by display:
