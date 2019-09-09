@@ -113,6 +113,39 @@ def show_pixels(payload):
   full_image = image_8x8.resize((display_side,display_side), Image.BICUBIC)
   matrix.SetImage(full_image,0,0)
 
+####
+def low_temp_ctl(payload):
+  global pixel_low_bound
+  
+  if payload == "+":
+    if pixel_low_bound < 255:
+      pixel_low_bound += 1
+    print "New low temp: "+str(pixel_low_bound)
+      
+  elif payload == "-":
+    if pixel_low_bound > 0: 
+      pixel_low_bound -= 1
+    print "New low temp: "+str(pixel_low_bound)
+ 
+  else:
+    print "Unknown payload for setting lower temp"
+  
+####
+def high_temp_ctl(payload):
+  global pixel_high_bound
+  
+  if payload == "+":
+    if pixel_high_bound < 255:
+      pixel_high_bound += 1
+    print "New high temp: "+str(pixel_high_bound)
+      
+  elif payload == "-":
+    if pixel_high_bound > 0: 
+      pixel_high_bound -= 1
+    print "New high temp: "+str(pixel_high_bound)
+ 
+  else:
+    print "Unknown payload for setting upper temp"
 ##############################
 # on_message
 #
@@ -122,6 +155,10 @@ def on_message(client, userdata, message):
 
   if message.topic == "ir_camera_pixels":
     show_pixels(message.payload)
+  elif message.topic == "ir_cam_display/low_temp":
+    low_temp_ctl(message.payload)
+  elif message.topic == "ir_cam_display/high_temp":
+    high_temp_ctl(message.payload)
   else:
     print("Unknown topic received:  "+message.topic)
 
@@ -140,6 +177,7 @@ except:
 
 client.loop_start()
 client.subscribe("ir_camera_pixels")
+client.subscribe("ir_cam_display/#")
 
 print "Display running.  Hit ctl-c to exit"
 while True:
