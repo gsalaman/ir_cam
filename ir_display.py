@@ -102,7 +102,6 @@ def show_pixels(payload):
       x = 0
       y += 1
   
-   
   # Okay, we've built the 8x8.  Now want to rescale it up to our display size
   # Since we're doing a square, make it the smaller of our width and height.
   if (total_rows < total_columns):
@@ -113,7 +112,15 @@ def show_pixels(payload):
   full_image = image_8x8.resize((display_side,display_side), Image.BICUBIC)
   matrix.SetImage(full_image,0,0)
 
-####
+###################################################
+# low_temp_ctl
+#
+#  This function modifies the low temperature bound based on the
+#  received payload.  Specificially:
+#    * If it's a "+", we'll increase it
+#    * If it's a "-", we'll decrease it
+#  All other payloads are ignored.
+###################################################
 def low_temp_ctl(payload):
   global pixel_low_bound
   
@@ -130,7 +137,15 @@ def low_temp_ctl(payload):
   else:
     print "Unknown payload for setting lower temp"
   
-####
+###################################################
+# high_temp_ctl
+#
+#  This function modifies the high temperature bound based on the
+#  received payload.  Specificially:
+#    * If it's a "+", we'll increase it
+#    * If it's a "-", we'll decrease it
+#  All other payloads are ignored.
+###################################################
 def high_temp_ctl(payload):
   global pixel_high_bound
   
@@ -147,7 +162,11 @@ def high_temp_ctl(payload):
   else:
     print "Unknown payload for setting upper temp"
 
-######
+####################################################
+# send_low_temp
+#
+#  Publishes the low temperature bound
+####################################################
 def send_low_temp():
   global pixel_low_bound
   global client
@@ -155,7 +174,11 @@ def send_low_temp():
   client.publish("ir_cam_display/value/low_temp", str(pixel_low_bound))
   print "Sent low temp: "+str(pixel_low_bound)
 
-######
+####################################################
+# send_high_temp
+#
+#  Publishes the high temperature bound
+####################################################
 def send_high_temp():
   global pixel_high_bound
   global client
