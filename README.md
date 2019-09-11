@@ -8,7 +8,8 @@ Pixel data lives as words from 0x80 to 0xFF
 Cam doesn't appear to support a "block read" functionality, so I'm gonna write one.  :)
 
 ## Docs
-I2C description: https://www.digikey.com/eewiki/display/Motley/Panasonic+Grid+Eye+Memory+Registers
+I2C description: https://www.digikey.com/eewiki/display/Motley/Panasonic+Grid+Eye+Memory+Registers  
+Enabling I2C on your pi:  https://github.com/gsalaman/pi_i2c_touch/README.md
 
 # MQTT based transaction thoughts
 ## camera side
