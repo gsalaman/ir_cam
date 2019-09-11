@@ -18,6 +18,19 @@ topic = ir_camera_pixels, message is a stream of 64 bytes.
 ## display side
 ir_display.py will be the display side.  We'll subscribe to the 64 pixels, and use that to make an 8x8 color image.  Then, using PIL, we'll upscale that image to our display size (keeping it a square).
 
+### a word on color
+The display side picks what color to use for a given pixel based on the low and high temperature bounds; specifically:
+* Pixels at or below the cold bound are mapped to blue
+* Pixels at or above the hot bound are mapped to red
+* Anything in between is interpolated, going through the yellow/green scale (rather than purple)
+
+The display has picked some default values, but here are some notes on adjusting the cold and hot bounds.
+* Raising the cold bound raises the temperature at which pixels are considered to be blue.  Think of this as making your background "more blue"
+* Lowering the cold bound lowers the temperature at which pixels are considered to be blue.  Think of this as making your background "more green"
+* Raising the high bound raises the temperature at which pixels are considered red.  Think of this as making your subject "more green"
+* Lowering the high bound lowers the temperature at which pixels are considered red.  Think of this as making your subject "more red"
+* Your color "dynamic range" is the space between the cold bound and the hot bound.  A bigger space here shows more pixel variation, while a smaller space shows less.
+
 # Public API
 | Message Topic | Payload | Description |
 |---|---|---|
