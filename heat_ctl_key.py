@@ -65,16 +65,16 @@ while True:
   key = getch_noblock()
 
   if key == 'd':
-    client.publish("ir_cam_display/low_temp", "-")
+    client.publish("ir_cam_display/set/low_temp", "-")
     print "Lowered cold bound"
   elif key == 'f':
-    client.publish("ir_cam_display/low_temp", "+")
+    client.publish("ir_cam_display/set/low_temp", "+")
     print "Raised cold bound"
   elif key == 'j':
     print "Lowered hot bound"
-    client.publish("ir_cam_display/high_temp", "-")
+    client.publish("ir_cam_display/set/high_temp", "-")
   elif key == 'k':
-    client.publish("ir_cam_display/high_temp", "+")
+    client.publish("ir_cam_display/set/high_temp", "+")
     print "Raised hot bound"
   elif key == 'q':
     break;

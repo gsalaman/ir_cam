@@ -146,6 +146,24 @@ def high_temp_ctl(payload):
  
   else:
     print "Unknown payload for setting upper temp"
+
+######
+def send_low_temp():
+  global pixel_low_bound
+  global client
+
+  client.publish("ir_cam_display/value/low_temp", str(pixel_low_bound))
+  print "Sent low temp: "+str(pixel_low_bound)
+
+######
+def send_high_temp():
+  global pixel_high_bound
+  global client
+
+  client.publish("ir_cam_display/value/high_temp", str(pixel_high_bound))
+  print "Sent high temp: "+str(pixel_high_bound)
+
+  
 ##############################
 # on_message
 #
@@ -155,10 +173,14 @@ def on_message(client, userdata, message):
 
   if message.topic == "ir_camera_pixels":
     show_pixels(message.payload)
-  elif message.topic == "ir_cam_display/low_temp":
+  elif message.topic == "ir_cam_display/set/low_temp":
     low_temp_ctl(message.payload)
-  elif message.topic == "ir_cam_display/high_temp":
+  elif message.topic == "ir_cam_display/set/high_temp":
     high_temp_ctl(message.payload)
+  elif message.topic == "ir_cam_display/query/low_temp":
+    send_low_temp()
+  elif message.topic == "ir_cam_display/query/high_temp":
+    send_high_temp()
   else:
     print("Unknown topic received:  "+message.topic)
 
@@ -177,7 +199,11 @@ except:
 
 client.loop_start()
 client.subscribe("ir_camera_pixels")
-client.subscribe("ir_cam_display/#")
+client.subscribe("ir_cam_display/set/#")
+client.subscribe("ir_cam_display/query/#")
+
+send_high_temp()
+send_low_temp()
 
 print "Display running.  Hit ctl-c to exit"
 while True:
