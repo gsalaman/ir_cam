@@ -18,22 +18,19 @@ topic = ir_camera_pixels, message is a stream of 64 bytes.
 ## display side
 ir_display.py will be the display side.  We'll subscribe to the 64 pixels, and use that to make an 8x8 color image.  Then, using PIL, we'll upscale that image to our display size (keeping it a square).
 
-## temp control
-`ir_cam_display/low_temp` with + or - as payload
-`ir_cam_display/high_temp` with + or - as payload
+# Public API
+| Message Topic | Payload | Description |
+|---|---|---|
+| ir_cam_display/set/low_temp | "+" or "-" | Either increments or decrements the low temperature display bound |
+| ir_cam_display/set/high_temp | "+" or "-" | Either increments or decrements the high temperature display bound |
+| ir_cam_display/query/low_temp | None | Causes the display to publish the low temp bound via an ir_cam_display/value/low_temp message |
+| ir_cam_display/query/high_temp | None | Causes the display to publish the high temp bound via an ir_cam_display/value/high_temp message |
+| ir_cam_display/value/low_temp | Low Temp bound | Payload contains the display's current low temperature bound. |
+| ir_cam_display/value/high_temp | High Temp bound | Payload contains the display's current high temperature bound. |
 
-# Future
-I'm was going to implement a "query/set" mechanism...that way a client can either set a raw pixel temperature for high 
-or low bound, or do an increment/decrement (query, add or subtract, then set)
+## Application notes
+In order to just set the low and high bounds, an app simply needs to send the ir_cam_display/set/# commands.
 
-This though requires you to store state:  am I incrementing or decrementing...wait for the value, then send the command.
-Easier to just do an increment/decrement function.
+If you want to see what the current bounds are, you need to subscribe to ir_cam_display/value/#.  You can query the current value at any time via ir_cam_display/query/...; thus a common flow is to set, then query.
 
-Proposed messages:  
-Subscribed by display:
-`ir_cam_display/query/low_temp` will cause `ir_cam_display/value/low_temp` to be published.  
-`ir_cam_display/query/high_temp` causes `ir_cam_display/value/high_temp` to be published.  
-`ir_cam_display/set/low_temp` will set the low temp.  
-`ir_cam_display/set/high_temp` sets the high temp.  
-
-Which means the app needs to subscribe to `ir_cam_display/value/#`
+Note that the display will autonomously send both values on startup in order to prevent "out of sync" conditions.  Any app should also query the values on startup for the same reason.
