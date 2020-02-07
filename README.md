@@ -11,6 +11,11 @@ Cam doesn't appear to support a "block read" functionality, so I'm gonna write o
 I2C description: https://www.digikey.com/eewiki/display/Motley/Panasonic+Grid+Eye+Memory+Registers  
 Enabling I2C on your pi:  https://github.com/gsalaman/pi_i2c_touch/blob/master/README.md
 
+## Hardware Alignment
+We're currently using a 64x64 matrix.  Looking at the back, the top of the matrix is the row with the two hub75 connectors and the power connector.  You can test this with my matrix_test.py program.
+
+For the sensor, it's aligned so the long axis is vertical.  The windown should be on the bottom.
+
 # MQTT based transaction thoughts
 ## camera side
 ir_camera.py will be the camera side.  It'll send 64 pixels of RAW data over to the display side as bytes...looks like the pixel data never (rarely?) saturates.
