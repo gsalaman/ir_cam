@@ -46,6 +46,7 @@ The display has picked some default values, but here are some notes on adjusting
 | ir_cam_display/query/high_temp | None | Causes the display to publish the high temp bound via an ir_cam_display/value/high_temp message |
 | ir_cam_display/value/low_temp | Low Temp bound | Payload contains the display's current low temperature bound. |
 | ir_cam_display/value/high_temp | High Temp bound | Payload contains the display's current high temperature bound. |
+| ir_cam/shutdown | N/A | Shuts down both the camera and display app |
 
 ## Application notes
 In order to just set the low and high bounds, an app simply needs to send the ir_cam_display/set/# commands.
