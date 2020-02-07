@@ -6,18 +6,31 @@ import paho.mqtt.client as mqtt
 from irCam import IrCam
 from broker import read_broker
 
+_shutdown = False
+
+def on_message(client, userdata, message):
+  global _shutdown
+
+  if (message.topic == "ir_cam/shutdown"):
+    print("Shutdown Received")
+    _shutdown = True
+
 sensor = IrCam()
 
 broker_address = read_broker()
 client = mqtt.Client("IR_Camera")
+client.on_message = on_message
 try:
   client.connect(broker_address)
 except:
-  print("Unable ot connect to MQTT broker")
+  print("Unable to connect to MQTT broker")
   exit(0)
 
+client.loop_start()
+client.subscribe("ir_cam/shutdown")
+
 print("Camera running.  Hit ctl-c to exit")
-while True:
+while (_shutdown == False):
   pixels = sensor.get_pixels()
   
   # x and y are the top right corner of our rectangle

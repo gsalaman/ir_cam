@@ -36,6 +36,8 @@ matrix = RGBMatrix(options = options)
 pixel_low_bound = 75 
 pixel_high_bound = 130 
 
+_shutdown = False
+
 ##############################
 # map_color
 #
@@ -194,6 +196,7 @@ def send_high_temp():
 #  MQTT callback for when we recieve a message.
 ##############################
 def on_message(client, userdata, message):
+  global _shutdown
 
   if message.topic == "ir_camera_pixels":
     show_pixels(message.payload)
@@ -205,6 +208,9 @@ def on_message(client, userdata, message):
     send_low_temp()
   elif message.topic == "ir_cam_display/query/high_temp":
     send_high_temp()
+  elif message.topic == "ir_cam/shutdown":
+    print("Shutdown Received")
+    _shutdown = True
   else:
     print("Unknown topic received:  "+message.topic)
 
@@ -225,11 +231,11 @@ client.loop_start()
 client.subscribe("ir_camera_pixels")
 client.subscribe("ir_cam_display/set/#")
 client.subscribe("ir_cam_display/query/#")
+client.subscribe("ir_cam/shutdown")
 
 send_high_temp()
 send_low_temp()
 
 print("Display running.  Hit ctl-c to exit")
-while True:
+while (_shutdown == False):
   time.sleep(1)
-
