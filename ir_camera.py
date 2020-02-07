@@ -13,10 +13,10 @@ client = mqtt.Client("IR_Camera")
 try:
   client.connect(broker_address)
 except:
-  print "Unable ot connect to MQTT broker"
+  print("Unable ot connect to MQTT broker")
   exit(0)
 
-print "Camera running.  Hit ctl-c to exit"
+print("Camera running.  Hit ctl-c to exit")
 while True:
   pixels = sensor.get_pixels()
   

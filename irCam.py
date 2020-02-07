@@ -26,7 +26,7 @@ class IrCam():
 
     # check input parameters
     if (index < 0) or (index >= self.num_pixels):
-      print "Pixel index out of range: "+str(index)
+      print("Pixel index out of range: "+str(index))
       exit(1) 
     
     address = self.I2C_PIXEL_BASE_ADDR + (index * 2) 

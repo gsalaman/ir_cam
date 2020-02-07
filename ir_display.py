@@ -128,15 +128,15 @@ def low_temp_ctl(payload):
   if payload == "+":
     if pixel_low_bound < 255:
       pixel_low_bound += 1
-    print "New low temp: "+str(pixel_low_bound)
+    print("New low temp: "+str(pixel_low_bound))
       
   elif payload == "-":
     if pixel_low_bound > 0: 
       pixel_low_bound -= 1
-    print "New low temp: "+str(pixel_low_bound)
+    print("New low temp: "+str(pixel_low_bound))
  
   else:
-    print "Unknown payload for setting lower temp"
+    print("Unknown payload for setting lower temp")
   
 ###################################################
 # high_temp_ctl
@@ -153,15 +153,15 @@ def high_temp_ctl(payload):
   if payload == "+":
     if pixel_high_bound < 255:
       pixel_high_bound += 1
-    print "New high temp: "+str(pixel_high_bound)
+    print("New high temp: "+str(pixel_high_bound))
       
   elif payload == "-":
     if pixel_high_bound > 0: 
       pixel_high_bound -= 1
-    print "New high temp: "+str(pixel_high_bound)
+    print("New high temp: "+str(pixel_high_bound))
  
   else:
-    print "Unknown payload for setting upper temp"
+    print("Unknown payload for setting upper temp")
 
 ####################################################
 # send_low_temp
@@ -173,7 +173,7 @@ def send_low_temp():
   global client
 
   client.publish("ir_cam_display/value/low_temp", str(pixel_low_bound))
-  print "Sent low temp: "+str(pixel_low_bound)
+  print("Sent low temp: "+str(pixel_low_bound))
 
 ####################################################
 # send_high_temp
@@ -185,7 +185,7 @@ def send_high_temp():
   global client
 
   client.publish("ir_cam_display/value/high_temp", str(pixel_high_bound))
-  print "Sent high temp: "+str(pixel_high_bound)
+  print("Sent high temp: "+str(pixel_high_bound))
 
   
 ##############################
@@ -218,7 +218,7 @@ try:
   print("Connecting to ", broker_address)
   client.connect(broker_address)
 except:
-  print "Unable to connect to MQTT broker"
+  print("Unable to connect to MQTT broker")
   exit(0)
 
 client.loop_start()
@@ -229,7 +229,7 @@ client.subscribe("ir_cam_display/query/#")
 send_high_temp()
 send_low_temp()
 
-print "Display running.  Hit ctl-c to exit"
+print("Display running.  Hit ctl-c to exit")
 while True:
   time.sleep(1)
 
