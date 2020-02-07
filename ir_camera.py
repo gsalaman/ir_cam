@@ -4,11 +4,11 @@
 import time
 import paho.mqtt.client as mqtt
 from irCam import IrCam
+from broker import read_broker
 
 sensor = IrCam()
 
-broker_address="10.0.0.17"
-#broker_address="makerlabpi1"
+broker_address = read_broker()
 client = mqtt.Client("IR_Camera")
 try:
   client.connect(broker_address)

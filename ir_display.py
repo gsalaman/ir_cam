@@ -6,6 +6,7 @@ import paho.mqtt.client as mqtt
 ###################################
 from rgbmatrix import RGBMatrix, RGBMatrixOptions
 from PIL import Image, ImageDraw
+from broker import read_broker
 
 # this is the size of ONE of our matrixes. 
 matrix_rows = 64 
@@ -210,11 +211,11 @@ def on_message(client, userdata, message):
 ###############################
 # And, the main code.
 ###############################
-broker_address = "10.0.0.17"
-#broker_address = "makerlabPi1"
+broker_address = read_broker(); 
 client = mqtt.Client("IR_Display")
 client.on_message=on_message
 try:
+  print("Connecting to ", broker_address)
   client.connect(broker_address)
 except:
   print "Unable to connect to MQTT broker"
