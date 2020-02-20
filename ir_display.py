@@ -122,8 +122,8 @@ def show_pixels(payload):
 #
 #  This function modifies the low temperature bound based on the
 #  received payload.  Specificially:
-#    * If it's a "+", we'll increase it
-#    * If it's a "-", we'll decrease it
+#    * If it's a "+", we'll increase it 
+#    * If it's a "-", we'll decrease it 
 #  All other payloads are ignored.
 ###################################################
 def low_temp_ctl(payload):
@@ -132,12 +132,14 @@ def low_temp_ctl(payload):
   if payload == "+":
     if ((pixel_low_bound < 255) and (pixel_low_bound + 1 < pixel_high_bound)):
       pixel_low_bound += 1
-    print("New low temp: "+str(pixel_low_bound))
+      send_low_temp()
+      print("New low temp: "+str(pixel_low_bound))
       
   elif payload == "-":
     if (pixel_low_bound > 0): 
       pixel_low_bound -= 1
-    print("New low temp: "+str(pixel_low_bound))
+      send_low_temp()
+      print("New low temp: "+str(pixel_low_bound))
  
   else:
     print("Unknown payload for setting lower temp")
@@ -157,12 +159,14 @@ def high_temp_ctl(payload):
   if payload == "+":
     if pixel_high_bound < 255:
       pixel_high_bound += 1
-    print("New high temp: "+str(pixel_high_bound))
+      send_high_temp()
+      print("New high temp: "+str(pixel_high_bound))
       
   elif payload == "-":
     if ((pixel_high_bound > 0) and (pixel_high_bound - 1 > pixel_low_bound)): 
       pixel_high_bound -= 1
-    print("New high temp: "+str(pixel_high_bound))
+      send_high_temp()
+      print("New high temp: "+str(pixel_high_bound))
  
   else:
     print("Unknown payload for setting upper temp")
