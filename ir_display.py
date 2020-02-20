@@ -33,8 +33,23 @@ matrix = RGBMatrix(options = options)
 # temperature to a color (from blue to red).
 # The low bound will tell which pixel temp maps to blue, and the high bound
 # tells what maps to red.
-pixel_low_bound = 75 
-pixel_high_bound = 130 
+try:
+  file = open('bounds.save','r')
+  line_number = 0
+  for line in file:
+    line = line.strip()
+    if (line_number == 0):
+      pixel_low_bound = int(line)
+    elif (line_number == 1):
+      pixel_high_bound = int(line)
+    line_number = line_number + 1
+  print("Saved values:")
+  print("  Low bound: "+str(pixel_low_bound))
+  print("  High bound: "+str(pixel_high_bound))
+except:
+  pixel_low_bound = 75 
+  pixel_high_bound = 130 
+  print("saved values don't exist.  Using defaults.")
 
 _shutdown = False
 
@@ -118,6 +133,24 @@ def show_pixels(payload):
   matrix.SetImage(full_image,0,0)
 
 ###################################################
+# write_bounds 
+#
+###################################################
+def write_bounds():
+  global pixel_low_bound
+  global pixel_high_bound
+
+  try:
+    file =  open('bounds.save', 'w')
+    file.write(str(pixel_low_bound))
+    file.write('\n')
+    file.write(str(pixel_high_bound))
+    file.write('\n')
+    file.close()
+  except:
+    print("unable to write bounds file")
+
+###################################################
 # low_temp_ctl
 #
 #  This function modifies the low temperature bound based on the
@@ -133,12 +166,14 @@ def low_temp_ctl(payload):
     if ((pixel_low_bound < 255) and (pixel_low_bound + 1 < pixel_high_bound)):
       pixel_low_bound += 1
       send_low_temp()
+      write_bounds()
       print("New low temp: "+str(pixel_low_bound))
       
   elif payload == "-":
     if (pixel_low_bound > 0): 
       pixel_low_bound -= 1
       send_low_temp()
+      write_bounds()
       print("New low temp: "+str(pixel_low_bound))
  
   else:
@@ -160,12 +195,14 @@ def high_temp_ctl(payload):
     if pixel_high_bound < 255:
       pixel_high_bound += 1
       send_high_temp()
+      write_bounds()
       print("New high temp: "+str(pixel_high_bound))
       
   elif payload == "-":
     if ((pixel_high_bound > 0) and (pixel_high_bound - 1 > pixel_low_bound)): 
       pixel_high_bound -= 1
       send_high_temp()
+      write_bounds()
       print("New high temp: "+str(pixel_high_bound))
  
   else:
