@@ -107,12 +107,14 @@ def show_pixels(payload):
   
   # Okay, we've built the 8x8.  Now want to rescale it up to our display size
   # Since we're doing a square, make it the smaller of our width and height.
+  # We also want to "flip" the image so that the RGB matrix acts like a mirror.
   if (total_rows < total_columns):
     display_side = total_rows
   else:
     display_side = total_columns
-
-  full_image = image_8x8.resize((display_side,display_side), Image.BICUBIC)
+  
+  image_flipped = image_8x8.transpose(Image.FLIP_LEFT_RIGHT)
+  full_image = image_flipped.resize((display_side,display_side), Image.BICUBIC)
   matrix.SetImage(full_image,0,0)
 
 ###################################################
