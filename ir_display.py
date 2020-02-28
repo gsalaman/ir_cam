@@ -144,6 +144,7 @@ def calibrate(payload):
   global calibrateMode
   current_low = 255
   current_high = 0
+  boostValue = 3
   # Step 1:  read the pixel data out of the message
   for item in payload:
     if (ord(item) < current_low):  
@@ -152,7 +153,10 @@ def calibrate(payload):
       current_high = (ord(item))
 
   print("current_low ", current_low)
+  current_low += boostValue 
+  print("boosted current_low", current_low)
   print("current_high ", current_high)
+
   calibrateMode = False
 
 ###################################################
