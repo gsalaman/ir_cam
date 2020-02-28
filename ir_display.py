@@ -142,6 +142,8 @@ def show_pixels(payload):
 #############################
 def calibrate(payload):
   global calibrateMode
+  global pixel_low_bound
+  global pixel_high_bound
   current_low = 255
   current_high = 0
   boostValue = 3
@@ -157,9 +159,12 @@ def calibrate(payload):
   print("boosted current_low", current_low)
   print("current_high ", current_high)
 
+  pixel_low_bound = current_low
+  pixel_high_bound = current_high
   calibrateMode = False
   send_high_temp()
   send_low_temp()
+
 
 ###################################################
 # write_bounds 
