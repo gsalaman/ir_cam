@@ -146,7 +146,7 @@ def calibrate(payload):
   global pixel_high_bound
   current_low = 255
   current_high = 0
-  boostValue = 3
+  boostValue = 12
   # Step 1:  read the pixel data out of the message
   for item in payload:
     if (ord(item) < current_low):  
