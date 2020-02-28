@@ -141,6 +141,7 @@ def show_pixels(payload):
 
 #############################
 def calibrate(payload):
+  global calibrateMode
   current_low = 255
   current_high = 0
   # Step 1:  read the pixel data out of the message
