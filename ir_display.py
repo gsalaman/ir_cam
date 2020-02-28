@@ -29,6 +29,8 @@ options.hardware_mapping = 'regular'
 
 matrix = RGBMatrix(options = options)
 
+calibrateMode = True
+
 # Since we're doing a "preditor" style view, we're going to map our raw pixel
 # temperature to a color (from blue to red).
 # The low bound will tell which pixel temp maps to blue, and the high bound
@@ -131,6 +133,26 @@ def show_pixels(payload):
   image_flipped = image_8x8.transpose(Image.FLIP_LEFT_RIGHT)
   full_image = image_flipped.resize((display_side,display_side), Image.BICUBIC)
   matrix.SetImage(full_image,0,0)
+
+#############################
+# calibrate
+#
+# This function calibrates the display based on initial high low readings from IR camera.
+
+#############################
+def calibrate(payload):
+  current_low = 255
+  current_high = 0
+  # Step 1:  read the pixel data out of the message
+  for item in payload:
+    if (ord(item) < current_low):  
+      current_low = (ord(item))
+    if (ord(item) > current_high):  
+      current_high = (ord(item))
+
+  print("current_low ", current_low)
+  print("current_high ", current_high)
+  calibrateMode = False
 
 ###################################################
 # write_bounds 
@@ -242,7 +264,10 @@ def on_message(client, userdata, message):
   global _shutdown
 
   if message.topic == "ir_camera_pixels":
-    show_pixels(message.payload)
+    if calibrateMode:
+      calibrate(message.payload)
+    else:
+      show_pixels(message.payload)
   elif message.topic == "ir_cam_display/set/low_temp":
     low_temp_ctl(message.payload)
   elif message.topic == "ir_cam_display/set/high_temp":
