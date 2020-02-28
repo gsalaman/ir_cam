@@ -29,7 +29,7 @@ options.hardware_mapping = 'regular'
 
 matrix = RGBMatrix(options = options)
 
-calibrateMode = True
+calibrateMode = False
 
 # Since we're doing a "preditor" style view, we're going to map our raw pixel
 # temperature to a color (from blue to red).
@@ -263,6 +263,7 @@ def send_high_temp():
 ##############################
 def on_message(client, userdata, message):
   global _shutdown
+  global calibrateMode
 
   if message.topic == "ir_camera_pixels":
     if calibrateMode:
@@ -280,6 +281,8 @@ def on_message(client, userdata, message):
   elif message.topic == "ir_cam/shutdown":
     print("Shutdown Received")
     _shutdown = True
+  elif message.topic == "ir_cam_display/calibrate":
+    calibrateMode = True
   else:
     print("Unknown topic received:  "+message.topic)
 
@@ -300,7 +303,9 @@ client.loop_start()
 client.subscribe("ir_camera_pixels")
 client.subscribe("ir_cam_display/set/#")
 client.subscribe("ir_cam_display/query/#")
+client.subscribe("ir_cam_display/calibrate")
 client.subscribe("ir_cam/shutdown")
+
 
 send_high_temp()
 send_low_temp()
