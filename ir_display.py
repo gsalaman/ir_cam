@@ -158,6 +158,8 @@ def calibrate(payload):
   print("current_high ", current_high)
 
   calibrateMode = False
+  send_high_temp()
+  send_low_temp()
 
 ###################################################
 # write_bounds 
